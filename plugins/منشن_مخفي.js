@@ -7,7 +7,7 @@ let handler = async (m, { conn, text, participants, isOwner, isAdmin }) => {
 
     let messageText = text || "هذه هي الرسالة الافتراضية"
 
-    let msg = conn.cMod(m.chat, generateWAMessageFromContent(m.chat, { [m.quoted ? q.mtype : 'extendedTextMessage']: m.quoted ? c.message[q.mtype] : { text: messageText }}, { quoted: m, userJid: conn.user.id }), messageText, conn.user.jid, { mentions: users })
+    let msg = conn.cMod(m.chat, generateWAMessageFromContent(m.chat, { [m.quoted ? q.mtype : 'extendedTextMessage']: m.quoted ? c.message[q.mtype] : { text: messageText } }, { quoted: m, userJid: conn.user.id }), messageText, conn.user.jid, { mentions: users })
 
     await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
 }
