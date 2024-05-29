@@ -1,21 +1,23 @@
-import { generateWAMessageFromContent } from '@adiwajshing/baileys'
+import baileys from '@whiskeysockets/baileys';
 
-let handler = async (m, { conn, text, participants, isOwner, isAdmin }) => {
-    let users = participants.map(u => conn.decodeJid(u.id))
-    let q = m.quoted ? m.quoted : m || m.text || m.sender
-    let c = m.quoted ? await m.getQuotedObj() : m.msg || m.text || m.sender
+const { WAConnection, MessageType, generateWAMessageFromContent } = baileys;
 
-    let messageText = text || "هذه هي الرسالة الافتراضية"
+let handler = async (m, { conn, text, participants }) => {
+    let users = participants.map(u => conn.decodeJid(u.id));
+    let q = m.quoted ? m.quoted : m || m.text || m.sender;
+    let c = m.quoted ? await m.getQuotedObj() : m.msg || m.text || m.sender;
 
-    let msg = conn.cMod(m.chat, generateWAMessageFromContent(m.chat, { [m.quoted ? q.mtype : 'extendedTextMessage']: m.quoted ? c.message[q.mtype] : { text: messageText } }, { quoted: m, userJid: conn.user.id }), messageText, conn.user.jid, { mentions: users })
+    let messageText = text || "هذه هي الرسالة الافتراضية";
 
-    await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
+    let msg = conn.cMod(m.chat, generateWAMessageFromContent(m.chat, { [m.quoted ? q.mtype : 'extendedTextMessage']: m.quoted ? c.message[q.mtype] : { text: messageText } }, { quoted: m, userJid: conn.user.id }), messageText, conn.user.jid, { mentions: users });
+
+    await conn.relayWAMessage(msg);
 }
 
-handler.help = ['hidetag']
-handler.tags = ['group']
-handler.command = /^(مخفي)$/i
-handler.group = true
-handler.owner = true
+handler.help = ['مخفي'];
+handler.tags = ['group'];
+handler.command = /^(مخفي)$/i;
+handler.group = true;
+handler.owner = false;
 
-export default handler
+export default handler;
